@@ -34,21 +34,12 @@ function Circle(background) {
   this.speedAngle = Math.random() * 2 * Math.PI;
   this.speedx = Math.cos(this.speedAngle) * this.speed;
   this.speedy = Math.sin(this.speedAngle) * this.speed;
-  //method to put a circle in the initial state after it has gone out of boundaries
-  this.init=function(){
-  this.x = randRange(-canvas.width/2, canvas.width/2);
-  this.y = randRange(0, canvas.height);
-  this.radius = background ? hyperRange(radMin, radMax) * backgroundMlt : hyperRange(radMin, radMax);
-  this.filled = randint(0,100) > filledCircle ? false : this.radius < radThreshold ? 'full' : 'concentric';
-  this.color = background ? backgroundColor : colors[randint(0, colors.length - 1)];
-  this.borderColor = background ? backgroundColor : colors[randint(0, colors.length - 1)];
-  this.opacity = 0.05;
-  this.speed = background ? randRange(speedMin, speedMax) / backgroundMlt : randRange(speedMin, speedMax);
-  this.speedAngle = Math.random() * 2 * Math.PI;
-  this.speedx = Math.cos(this.speedAngle) * this.speed;
-  this.speedy = Math.sin(this.speedAngle) * this.speed;
-  };
+};
+
+Circle.prototype.init = function(){
+  Circle.call(this, this.background);
 }
+
 //support functions
 //generate random int a<=x<=b
 function randint(a, b) {
@@ -97,7 +88,7 @@ function init() {
 
 //rendering function
 function draw() {
-  
+
   if (circlePulse) {
     if (circleExp < circleExpMin || circleExp > circleExpMax) circleExpSp *= -1;
     circleExp += circleExpSp;
@@ -109,7 +100,7 @@ function draw() {
 
   ctx.save();
   ctx.translate(canvas.width / 2, canvas.height / 2);
-  
+
   //function to render each single circle, its connections and to manage its out of boundaries replacement
   function renderPoints(arr){
     for (var i = 0; i < arr.length; i++){
@@ -143,12 +134,12 @@ function draw() {
       }
     }
   }
-  
+
   var startTime=Date.now();
   renderPoints(points);
   renderPoints(pointsBack);
   deltaT=Date.now()-startTime;
-  
+
   ctx.restore();
 
   window.requestAnimationFrame(draw);
